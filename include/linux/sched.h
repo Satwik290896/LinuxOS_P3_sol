@@ -95,6 +95,9 @@ struct io_uring_task;
 #define TASK_NEW			0x0800
 #define TASK_STATE_MAX			0x1000
 
+/* For pstrace */
+#define TASK_RUNNABLE			0x0003
+
 /* Convenience macros for the sake of set_current_state: */
 #define TASK_KILLABLE			(TASK_WAKEKILL | TASK_UNINTERRUPTIBLE)
 #define TASK_STOPPED			(TASK_WAKEKILL | __TASK_STOPPED)

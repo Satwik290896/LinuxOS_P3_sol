@@ -68,6 +68,7 @@
 #include <linux/uaccess.h>
 #include <asm/unistd.h>
 #include <asm/mmu_context.h>
+#include <linux/pstrace.h>
 
 static void __unhash_process(struct task_struct *p, bool group_dead)
 {
@@ -184,7 +185,9 @@ void release_task(struct task_struct *p)
 	struct task_struct *leader;
 	struct pid *thread_pid;
 	int zap_leader;
+
 repeat:
+	pstrace_add(p, 0);
 	/* don't need to get the RCU readlock here - the process is dead and
 	 * can't be modifying its own credentials. But shut RCU-lockdep up */
 	rcu_read_lock();
@@ -671,6 +674,7 @@ static void exit_notify(struct task_struct *tsk, int group_dead)
 	}
 
 	if (autoreap) {
+		pstrace_add(tsk, 0);
 		tsk->exit_state = EXIT_DEAD;
 		list_add(&tsk->ptrace_entry, &dead);
 	}
